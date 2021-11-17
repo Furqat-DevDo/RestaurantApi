@@ -1,30 +1,27 @@
-namespace RestaurantApi.Controllers
-{   
-    [ApiController]
-    [Route("[controller]")]
-    public class PizzaController:ControllerBase
-    { 
-      private readonly ILogger<PizzaController> _logger;
-      private readonly IStoreService _pizzaService;
-
-      public PizzaController(ILogger<PizzaController> logger, IStoreService pizzaService)
+[ApiController]
+[Route("[controller]")]
+public class PizzaController:ControllerBase
+    {
+     private readonly ILogger<PizzaController> _Anotherlogger;
+     private readonly IStoreService _PizzaService;
+      public PizzaController(ILogger <PizzaController> Logger,IStoreService Pizzaservice)
       {
-        _logger = logger;
-        _pizzaService = pizzaService;
+         _Anotherlogger = Logger; 
+         _PizzaService = Pizzaservice;
       }
-
-     [HttpPost]
-     public async Task<IActionResult> PostPizza(Models.PizzaModel pizza)
-     {
-        return CreatedAtAction(nameof(PostPizza), await _pizzaService.CreatePizzaAsync(pizza.ToPizzaEntity()));
-     }
+      
+    [HttpPost]
+    public async Task<IActionResult> PostPizza(PizzaModel Pizza)
+    {
+         return CreatedAtAction(nameof(PostPizza), await _PizzaService.CreatePizzaAsync(Pizza.ToPizzaEntity()));
+    }
 
      [HttpGet]
      public async Task<IActionResult> GetAsync()
      {
         try
         {
-        var Pizzas = await _pizzaService.QueryPizzasAsync();      
+        var Pizzas = await _PizzaService.QueryPizzasAsync();      
         return Ok(Pizzas);
         }
         catch(Exception e)
@@ -39,7 +36,7 @@ namespace RestaurantApi.Controllers
      {
         try
         {
-          var Pizza= await _pizzaService. QueryPizzaAsync(id);
+          var Pizza= await _PizzaService. QueryPizzaAsync(id);
           return Ok(Pizza);
         } 
         catch(Exception e)
@@ -54,7 +51,7 @@ namespace RestaurantApi.Controllers
      {
        try
        {
-          var DelateId = await _pizzaService.RemovePizzaAsync(Id);
+          var DelateId = await _PizzaService.RemovePizzaAsync(Id);
            return StatusCode(204);
        } 
        catch(Exception e) 
@@ -65,20 +62,18 @@ namespace RestaurantApi.Controllers
 
      [HttpPut]
      [Route("{id}")]
-     public async Task<ActionResult> CreateAsync([FromRoute]Guid id, [FromBody]Models.PizzaModel Pizza) 
+     public async Task<ActionResult> CreateAsync([FromRoute]Guid id, [FromBody]PizzaModel Pizza) 
      {
      try
      {
      var entities =Pizza.ToPizzaEntity();
      entities.Id = id;
-     var result = await _pizzaService.UpdatePizzaAsync(entities);
+     var result = await _PizzaService.UpdatePizzaAsync(entities);
      return StatusCode(202);
      }
      catch(Exception e)
      {
       return BadRequest(e.Message);
      }
-    }
-        
     }
 }

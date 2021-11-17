@@ -7,4 +7,4 @@ global using RestaurantApi.Services;
 global using System.Text.Json.Serialization;
 global using Microsoft.AspNetCore.Mvc;
 global using RestaurantApi.Mappers;
-global using RestaurantApi.Controllers;
+global using RestaurantApi.Models;
