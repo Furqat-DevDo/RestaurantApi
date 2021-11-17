@@ -1,0 +1,84 @@
+namespace RestaurantApi.Controllers
+{   
+    [ApiController]
+    [Route("[controller]")]
+    public class PizzaController:ControllerBase
+    { 
+      private readonly ILogger<PizzaController> _logger;
+      private readonly IStoreService _pizzaService;
+
+      public PizzaController(ILogger<PizzaController> logger, IStoreService pizzaService)
+      {
+        _logger = logger;
+        _pizzaService = pizzaService;
+      }
+
+     [HttpPost]
+     public async Task<IActionResult> PostPizza(Models.PizzaModel pizza)
+     {
+        return CreatedAtAction(nameof(PostPizza), await _pizzaService.CreatePizzaAsync(pizza.ToPizzaEntity()));
+     }
+
+     [HttpGet]
+     public async Task<IActionResult> GetAsync()
+     {
+        try
+        {
+        var Pizzas = await _pizzaService.QueryPizzasAsync();      
+        return Ok(Pizzas);
+        }
+        catch(Exception e)
+        {
+         return BadRequest(e.Message); 
+        }
+     }
+
+     [HttpGet]
+     [Route("{id}")]
+     public async Task<IActionResult> GetAsync([FromRoute] Guid id)
+     {
+        try
+        {
+          var Pizza= await _pizzaService. QueryPizzaAsync(id);
+          return Ok(Pizza);
+        } 
+        catch(Exception e)
+        {
+          return NotFound(e.Message);
+        }       
+     }
+
+     [HttpDelete]
+     [Route("{Id}")]
+     public async Task<IActionResult> DelateTaskAsync([FromRoute]Guid Id)
+     {
+       try
+       {
+          var DelateId = await _pizzaService.RemovePizzaAsync(Id);
+           return StatusCode(204);
+       } 
+       catch(Exception e) 
+       {
+        return NotFound(e.Message);
+       }         
+     }
+
+     [HttpPut]
+     [Route("{id}")]
+     public async Task<ActionResult> CreateAsync([FromRoute]Guid id, [FromBody]Models.PizzaModel Pizza) 
+     {
+     try
+     {
+     var entities =Pizza.ToPizzaEntity();
+     entities.Id = id;
+     var result = await _pizzaService.UpdatePizzaAsync(entities);
+     return StatusCode(202);
+     }
+     catch(Exception e)
+     {
+      return BadRequest(e.Message);
+     }
+    }
+        
+    }
+}
